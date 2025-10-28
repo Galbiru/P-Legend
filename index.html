@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Legend</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        /* Warna Dasar: Putih dan Hijau */
+        :root {
+            --color-primary: #10B981; /* Hijau Emerald */
+            --color-secondary: #059669;
+            --color-background: #F8F8F8; /* Abu-abu Sangat Muda, mendekati Putih */
+            --color-text: #333333;
+            --color-light-text: #6B7280;
+            --color-card-bg: #FFFFFF;
+            --color-border: #E5E7EB;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            min-height: 100vh;
+            padding-top: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Tampilan Welcome Page */
+        #welcome-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            text-align: center;
+        }
+
+        #welcome-page h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-light-text);
+            margin-bottom: 0.5rem;
+        }
+
+        #welcome-page .welcome-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 0.5rem 0 3rem 0;
+            white-space: pre-line;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #start-btn {
+            background-color: var(--color-primary);
+            color: #FFFFFF;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 9999px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(16, 185, 129, 0.4);
+            letter-spacing: 0.05em;
+        }
+
+        #start-btn:hover {
+            background-color: var(--color-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.6);
+        }
+
+        /* Tampilan Main View */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .datetime {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-light-text);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background-color: var(--color-card-bg);
+            font-weight: 600;
+        }
+
+        .regional-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-items: center;
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Tombol */
+        .regional-btn, .user-btn, .back-btn {
+            background-color: var(--color-card-bg);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .regional-btn:hover, .user-btn:hover, .back-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .user-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100px;
+            padding: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* Mengatur agar user-btn memiliki ukuran yang sama dalam grid */
+        .users-grid > * {
+            width: 100%;
+            height: 100px;
+        }
+
+
+        .back-btn {
+            background-color: #FFFFFF;
+            color: var(--color-light-text);
+            border-radius: 8px;
+        }
+
+        .back-btn:hover {
+            background-color: var(--color-primary);
+            color: #FFFFFF;
+        }
+
+
+        .content-container {
+            padding: 1.5rem;
+            box-sizing: border-box;
+            background-color: var(--color-card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-details-text {
+            color: var(--color-text);
+            margin-bottom: 1.5rem;
+            text-align: left;
+            background-color: #F3F4F6;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .user-details-text h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        .user-details-text ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--color-light-text);
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .number-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0.75rem 1rem;
+            background-color: #E5E7EB; /* Latar tombol normal */
+            border: 1px solid #D1D5DB;
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        .number-btn:hover {
+            transform: translateY(-1px);
+            background-color: #D1D5DB;
+        }
+
+        .number-btn.disabled {
+            background-color: #F9FAFB;
+            border-color: #E5E7EB;
+            color: #C0C0C0;
+            cursor: not-allowed;
+        }
+
+        .number-btn.clicked {
+            background-color: var(--color-primary); /* Hijau saat diklik */
+            border-color: var(--color-secondary);
+            color: #FFFFFF;
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
+        }
+
+        .number-btn.clicked:hover {
+            background-color: var(--color-secondary);
+        }
+
+        .fade-transition {
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* MEDIA QUERIES UNTUK TAMPILAN RESPONSIVE */
+        @media (max-width: 768px) {
+            #welcome-page .welcome-title {
+                font-size: 2.5rem;
+            }
+            .regional-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            .regional-btn {
+                font-size: 1rem;
+            }
+            .users-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            .user-btn {
+                height: 80px;
+            }
+            .users-grid > * {
+                height: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #welcome-page .welcome-title {
+                font-size: 2rem;
+            }
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+            .user-btn {
+                height: 60px;
+            }
+            .users-grid > * {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div class="max-w-xl mx-auto">
+        <div id="welcome-page" class="fade-transition" style="opacity: 1;">
+            <h2>WELCOME TO</h2>
+            <h1 class="welcome-title">PROJECT LEGEND</h1>
+            <button id="start-btn" aria-label="Press start to continue">PRESS START TO CONTINUE</button>
+        </div>
+        <div id="main-view" class="fade-transition" style="display: none; opacity: 0;">
+            <h1 class="main-title text-center">PROJECT LEGEND</h1>
+            <div id="datetime" class="datetime"></div>
+            
+            <div id="regional-buttons-container" class="regional-grid">
+                <button class="regional-btn" data-region="jakarta" aria-label="Select Jakarta region">JAKARTA</button>
+                <button class="regional-btn" data-region="balikpapan" aria-label="Select Balikpapan region">BALIKPAPAN</button>
+                <button class="regional-btn" data-region="makassar" aria-label="Select Makassar region">MAKASSAR</button>
+                <button class="regional-btn" data-region="jayapura" aria-label="Select Jayapura region">JAYAPURA</button>
+                <button class="regional-btn" data-region="semarang" aria-label="Select Semarang region">SEMARANG</button>
+                <button class="regional-btn" data-region="sorong" aria-label="Select Sorong region">SORONG</button>
+                <button class="regional-btn" data-region="manado" aria-label="Select Manado region">MANADO</button>
+            </div>
+            
+            <div id="back-to-regional-container" class="mb-4" style="display: none;"></div>
+
+            <div id="user-buttons-container" class="users-grid" style="display: none;"></div>
+        </div>
+        <div id="content-display-area"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let clickedNumbers = JSON.parse(localStorage.getItem('clickedNumbers')) || {};
+            
+            // Data User BARU
+            const USERS_DATA = {
+                jakarta: [
+                    { id: 'rondang', name: 'Rondang' },
+                    { id: 'neneng', name: 'Neneng' },
+                    { id: 'mawar', name: 'Mawar' },
+                    { id: 'evie', name: 'Evie' },
+                    { id: 'rossi', name: 'Rossi' },
+                    { id: 'sri', name: 'Sri' },
+                    { id: 'sulastri', name: 'Sulastri' },
+                    { id: 'ninik', name: 'Ninik' },
+                    { id: 'poppy', name: 'Poppy' },
+                    { id: 'yohana', name: 'Yohana' },
+                ],
+                balikpapan: [
+                    { id: 'irmawati', name: 'Irmawati' },
+                    { id: 'fitriani', name: 'Fitriani' },
+                    { id: 'ita', name: 'Ita' },
+                    { id: 'aisyah', name: 'Aisyah' },
+                    { id: 'riskianur', name: 'Riskianur' },
+                    { id: 'vita', name: 'Vita' },
+                    { id: 'sribp', name: 'Sri' },
+                ],
+                makassar: [
+                    { id: 'tenri', name: 'Tenri' },
+                    { id: 'irman', name: 'Irman' },
+                    { id: 'nilawati', name: 'Nilawati' },
+                    { id: 'waode', name: 'Waode' },
+                ],
+                jayapura: [
+                    { id: 'yohan', name: 'Yohan' },
+                    { id: 'tamsil', name: 'Tamsil' },
+                    { id: 'dahlan', name: 'Dahlan' },
+                    { id: 'ali', name: 'Ali' },
+                ],
+                semarang: [
+                    { id: 'neni', name: 'Neni' },
+                    { id: 'rita', name: 'Rita' },
+                    { id: 'dewi', name: 'Dewi' },
+                    { id: 'dimas', name: 'Dimas' },
+                ],
+                sorong: [
+                    { id: 'maria', name: 'Maria' },
+                    { id: 'nuhun', name: 'Nuhun' },
+                    { id: 'sokihiun', name: 'Sokihiun' },
+                ],
+                manado: [
+                    { id: 'test1', name: 'Test1' },
+                    { id: 'test2', name: 'Test2' },
+                    { id: 'test3', name: 'Test3' },
+                ],
+            };
+            
+            // Link yang seragam untuk semua user, ada 3
+            const SURVEY_LINKS = [
+                { label: 'Link Test 1', url: 'https://survey.xmfactory.com/link-1' },
+                { label: 'Link Test 2', url: 'https://survey.xmfactory.com/link-2' },
+                { label: 'Link Test 3', url: 'https://survey.xmfactory.com/link-3' },
+            ];
+
+            const welcomePage = document.getElementById('welcome-page');
+            const startBtn = document.getElementById('start-btn');
+            const mainView = document.getElementById('main-view');
+            const userButtonsContainer = document.getElementById('user-buttons-container');
+            const contentDisplayArea = document.getElementById('content-display-area');
+            const regionalButtonsContainer = document.getElementById('regional-buttons-container');
+            const backToRegionalContainer = document.getElementById('back-to-regional-container');
+            let currentRegion = null;
+
+            function generateUserButtons(region) {
+                currentRegion = region;
+                userButtonsContainer.innerHTML = '';
+                backToRegionalContainer.innerHTML = '';
+                
+                // 1. Buat tombol kembali
+                const backButton = document.createElement('button');
+                backButton.className = 'back-btn w-full';
+                backButton.textContent = '← Kembali ke Pilihan Kota';
+                backButton.addEventListener('click', () => {
+                    regionalButtonsContainer.style.display = 'grid';
+                    userButtonsContainer.style.display = 'none';
+                    backToRegionalContainer.style.display = 'none';
+                    contentDisplayArea.innerHTML = ''; // Pastikan area konten juga bersih
+                    userButtonsContainer.innerHTML = '';
+                    backToRegionalContainer.innerHTML = '';
+                    currentRegion = null;
+                });
+
+                backToRegionalContainer.appendChild(backButton);
+                backToRegionalContainer.style.display = 'block';
+
+                // 2. Buat tombol-tombol user
+                const userList = USERS_DATA[region] || [];
+                userList.forEach(user => {
+                    const userButton = document.createElement('button');
+                    userButton.className = 'user-btn';
+                    userButton.textContent = user.name;
+                    userButton.dataset.target = user.id;
+                    userButton.dataset.region = region;
+                    userButtonsContainer.appendChild(userButton);
+                });
+
+                showScreen('main-view');
+                userButtonsContainer.style.display = 'grid';
+            }
+
+            function generateUserContent(user, region) {
+                // Hapus konten sebelumnya jika ada
+                contentDisplayArea.innerHTML = '';
+                
+                const userDetailsHTML = `
+                    <div class="user-details-text">
+                        <h3 class="font-bold text-lg">${user.name}</h3>
+                        <ul class="list-none p-0 mt-2">
+                            <li><span class="font-semibold">- ID :</span> ${user.id}</li>
+                            <li><span class="font-semibold">- Kota :</span> ${region.charAt(0).toUpperCase() + region.slice(1)}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                // Buat tombol link
+                let numberGridHTML = '';
+                SURVEY_LINKS.forEach((link, index) => {
+                    const linkId = `${user.id}-${index + 1}`;
+                    const isClicked = clickedNumbers[linkId] ? 'clicked' : '';
+                    numberGridHTML += `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="number-btn ${isClicked}" data-link-id="${linkId}">${link.label}</a>`;
+                });
+
+                const newContentWrapper = document.createElement('div');
+                newContentWrapper.id = user.id;
+                newContentWrapper.className = 'content-container fade-transition';
+                newContentWrapper.style.display = 'none';
+                newContentWrapper.style.opacity = '0';
+                newContentWrapper.innerHTML = `
+                    <button class="back-btn mb-4 w-full" aria-label="Back to city menu">← Kembali ke Menu Kota</button>
+                    ${userDetailsHTML}
+                    <div class="number-grid">${numberGridHTML}</div>
+                `;
+                contentDisplayArea.appendChild(newContentWrapper);
+
+                newContentWrapper.querySelector('.back-btn').addEventListener('click', () => {
+                    showScreen('main-view');
+                    // Tampilkan kembali tombol user untuk kota yang sama
+                    regionalButtonsContainer.style.display = 'none';
+                    userButtonsContainer.style.display = 'grid';
+                    backToRegionalContainer.style.display = 'block';
+                    contentDisplayArea.innerHTML = '';
+                });
+            }
+
+            function updateDateTime() {
+                const now = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta' };
+                document.getElementById('datetime').textContent = now.toLocaleString('id-ID', options);
+            }
+
+            function showScreen(screenToShow) {
+                const allScreens = [welcomePage, mainView, ...Array.from(contentDisplayArea.children)];
+                allScreens.forEach(screen => {
+                    screen.style.display = 'none';
+                    screen.style.opacity = '0';
+                });
+
+                const screen = document.getElementById(screenToShow);
+                if (screen) {
+                    screen.style.display = 'block';
+                    setTimeout(() => screen.style.opacity = '1', 50);
+                }
+            }
+
+            // Event Listener Regional Button (Pilih Kota)
+            regionalButtonsContainer.addEventListener('click', function(event) {
+                const target = event.target.closest('.regional-btn');
+                if (target) {
+                    const region = target.dataset.region;
+                    generateUserButtons(region);
+                    regionalButtonsContainer.style.display = 'none'; // Sembunyikan pilihan regional
+                }
+            });
+
+            // Event Listener User Button (Pilih User)
+            userButtonsContainer.addEventListener('click', function(event) {
+                const target = event.target.closest('.user-btn');
+                if (target) {
+                    const userId = target.dataset.target;
+                    const region = target.dataset.region;
+                    // Cari user di data berdasarkan region dan id
+                    const user = (USERS_DATA[region] || []).find(u => u.id === userId); 
+                    if (user) {
+                        // Hilangkan kembali ke regional
+                        backToRegionalContainer.style.display = 'none';
+                        userButtonsContainer.style.display = 'none';
+                        
+                        generateUserContent(user, region);
+                        showScreen(user.id);
+                    }
+                }
+            });
+
+            // Event Listener Link Button (Link Test)
+            document.addEventListener('click', function(event) {
+                const target = event.target.closest('a.number-btn:not(.disabled)');
+                if (target) {
+                    const linkId = target.dataset.linkId;
+                    if (linkId) {
+                        clickedNumbers[linkId] = true;
+                        localStorage.setItem('clickedNumbers', JSON.stringify(clickedNumbers));
+                        target.classList.add('clicked');
+                    }
+                }
+            });
+
+            // Event Listener Start Button
+            startBtn.addEventListener('click', () => {
+                welcomePage.style.opacity = '0';
+                setTimeout(() => {
+                    showScreen('main-view');
+                    regionalButtonsContainer.style.display = 'grid'; 
+                    userButtonsContainer.style.display = 'none';
+                    backToRegionalContainer.style.display = 'none';
+                }, 500);
+            });
+
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        });
+    </script>
+</body>
+</html>
