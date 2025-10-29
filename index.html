@@ -572,13 +572,23 @@
             const itModeView = document.getElementById('it-mode-view');
             const backToMainViewBtn = document.getElementById('back-to-main-view-btn');
             const mainContentContainer = document.querySelector('.max-w-xl.mx-auto');
+            let realtimeInterval;
+
+            const mockData = [
+                { deviceName: 'Desktop-01', ip: '192.168.1.10', loginTime: '2024-07-28 08:00', duration: '2h 15m', coords: '40.7128° N, 74.0060° W' },
+                { deviceName: 'Laptop-03', ip: '10.0.0.5', loginTime: '2024-07-28 08:05', duration: '1h 30m', coords: '34.0522° N, 118.2437° W' },
+                { deviceName: 'Mobile-A', ip: '172.16.0.12', loginTime: '2024-07-28 08:10', duration: '45m', coords: '51.5074° N, 0.1278° W' },
+                { deviceName: 'Tablet-X', ip: '192.168.2.15', loginTime: '2024-07-28 08:12', duration: '3h 5m', coords: '35.6895° N, 139.6917° E' },
+                { deviceName: 'Desktop-02', ip: '192.168.1.11', loginTime: '2024-07-28 08:15', duration: '2h 10m', coords: '48.8566° N, 2.3522° E' },
+            ];
 
             itModeBtn.addEventListener('click', () => {
                 const password = prompt("Enter the password to access IT Mode:");
                 if (password === "R!dho0o0107") {
                     mainContentContainer.style.display = 'none';
                     itModeView.style.display = 'block';
-                    generateLoginHistoryTable();
+                    renderLoginHistoryTable();
+                    realtimeInterval = setInterval(addRandomLoginEntry, 10000);
                 } else {
                     alert("Incorrect password.");
                 }
@@ -587,44 +597,66 @@
             backToMainViewBtn.addEventListener('click', () => {
                 itModeView.style.display = 'none';
                 mainContentContainer.style.display = 'block';
+                clearInterval(realtimeInterval);
             });
 
-            function generateLoginHistoryTable() {
-                const tableContainer = document.getElementById('login-history-table-container');
-                const mockData = [
-                    { deviceName: 'Desktop-01', ip: '192.168.1.10', loginTime: '2024-07-28 08:00', duration: '2h 15m', coords: '40.7128° N, 74.0060° W' },
-                    { deviceName: 'Laptop-03', ip: '10.0.0.5', loginTime: '2024-07-28 08:05', duration: '1h 30m', coords: '34.0522° N, 118.2437° W' },
-                    { deviceName: 'Mobile-A', ip: '172.16.0.12', loginTime: '2024-07-28 08:10', duration: '45m', coords: '51.5074° N, 0.1278° W' },
-                    { deviceName: 'Tablet-X', ip: '192.168.2.15', loginTime: '2024-07-28 08:12', duration: '3h 5m', coords: '35.6895° N, 139.6917° E' },
-                    { deviceName: 'Desktop-02', ip: '192.168.1.11', loginTime: '2024-07-28 08:15', duration: '2h 10m', coords: '48.8566° N, 2.3522° E' },
-                ];
+            function addRandomLoginEntry() {
+                const newEntry = {
+                    deviceName: `Device-${Math.floor(Math.random() * 100)}`,
+                    ip: `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`,
+                    loginTime: new Date().toLocaleString('en-CA', { hour12: false }).replace(',', ''),
+                    duration: `${Math.floor(Math.random() * 5)}h ${Math.floor(Math.random() * 60)}m`,
+                    coords: `${(Math.random() * 180 - 90).toFixed(4)}° N, ${(Math.random() * 360 - 180).toFixed(4)}° W`
+                };
+                mockData.unshift(newEntry);
+                renderLoginHistoryTable();
+            }
 
-                let tableHTML = `
-                    <table class="min-w-full divide-y divide-gray-700">
-                        <thead class="bg-gray-800">
-                            <tr>
-                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Device Name</th>
-                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">IP Address</th>
-                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Login Time</th>
-                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Duration</th>
-                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Coordinates</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-800 bg-gray-900">
-                `;
-                mockData.forEach(item => {
-                    tableHTML += `
-                        <tr class="hover:bg-gray-700 transition-colors">
-                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.deviceName}</td>
-                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.ip}</td>
-                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.loginTime}</td>
-                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.duration}</td>
-                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.coords}</td>
-                        </tr>
+            function renderLoginHistoryTable() {
+                const tableContainer = document.getElementById('login-history-table-container');
+                const table = tableContainer.querySelector('table');
+
+                if (!table) {
+                    let tableHTML = `
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-800">
+                                <tr>
+                                    <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Device Name</th>
+                                    <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">IP Address</th>
+                                    <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Login Time</th>
+                                    <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Duration</th>
+                                    <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Coordinates</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800 bg-gray-900">
                     `;
-                });
-                tableHTML += `</tbody></table>`;
-                tableContainer.innerHTML = tableHTML;
+                    mockData.forEach(item => {
+                        tableHTML += `
+                            <tr class="hover:bg-gray-700 transition-colors">
+                                <td class="whitespace-nowrap px-4 py-4 text-sm">${item.deviceName}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm">${item.ip}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm">${item.loginTime}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm">${item.duration}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm">${item.coords}</td>
+                            </tr>
+                        `;
+                    });
+                    tableHTML += `</tbody></table>`;
+                    tableContainer.innerHTML = tableHTML;
+                } else {
+                    const tbody = table.querySelector('tbody');
+                    const newEntry = mockData[0];
+                    const newRow = document.createElement('tr');
+                    newRow.className = "hover:bg-gray-700 transition-colors";
+                    newRow.innerHTML = `
+                        <td class="whitespace-nowrap px-4 py-4 text-sm">${newEntry.deviceName}</td>
+                        <td class="whitespace-nowrap px-4 py-4 text-sm">${newEntry.ip}</td>
+                        <td class="whitespace-nowrap px-4 py-4 text-sm">${newEntry.loginTime}</td>
+                        <td class="whitespace-nowrap px-4 py-4 text-sm">${newEntry.duration}</td>
+                        <td class="whitespace-nowrap px-4 py-4 text-sm">${newEntry.coords}</td>
+                    `;
+                    tbody.insertBefore(newRow, tbody.firstChild);
+                }
             }
         });
     </script>
