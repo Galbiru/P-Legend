@@ -276,6 +276,18 @@
         <div id="content-display-area"></div>
     </div>
 
+    <div id="it-mode-view" class="fixed inset-0 bg-gray-900 bg-opacity-95 p-8 text-white" style="display: none;">
+        <h2 class="text-3xl font-bold mb-6 text-center text-emerald-400">IT Mode - Device Login History</h2>
+        <div id="login-history-table-container" class="overflow-y-auto h-[calc(100%-100px)] rounded-lg border border-gray-700"></div>
+        <button id="back-to-main-view-btn" class="absolute top-6 right-8 text-gray-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <button id="it-mode-btn" class="fixed bottom-4 left-4 bg-gray-800 text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-700 transition-colors">
+        IT Mode
+    </button>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let clickedNumbers = JSON.parse(localStorage.getItem('clickedNumbers')) || {};
@@ -554,6 +566,61 @@
             initializeGlobalLinks();
             updateDateTime();
             setInterval(updateDateTime, 1000);
+
+            // --- IT Mode Functionality ---
+            const itModeBtn = document.getElementById('it-mode-btn');
+            const itModeView = document.getElementById('it-mode-view');
+            const backToMainViewBtn = document.getElementById('back-to-main-view-btn');
+            const mainContentContainer = document.querySelector('.max-w-xl.mx-auto');
+
+            itModeBtn.addEventListener('click', () => {
+                mainContentContainer.style.display = 'none';
+                itModeView.style.display = 'block';
+                generateLoginHistoryTable();
+            });
+
+            backToMainViewBtn.addEventListener('click', () => {
+                itModeView.style.display = 'none';
+                mainContentContainer.style.display = 'block';
+            });
+
+            function generateLoginHistoryTable() {
+                const tableContainer = document.getElementById('login-history-table-container');
+                const mockData = [
+                    { deviceName: 'Desktop-01', ip: '192.168.1.10', loginTime: '2024-07-28 08:00', duration: '2h 15m', coords: '40.7128° N, 74.0060° W' },
+                    { deviceName: 'Laptop-03', ip: '10.0.0.5', loginTime: '2024-07-28 08:05', duration: '1h 30m', coords: '34.0522° N, 118.2437° W' },
+                    { deviceName: 'Mobile-A', ip: '172.16.0.12', loginTime: '2024-07-28 08:10', duration: '45m', coords: '51.5074° N, 0.1278° W' },
+                    { deviceName: 'Tablet-X', ip: '192.168.2.15', loginTime: '2024-07-28 08:12', duration: '3h 5m', coords: '35.6895° N, 139.6917° E' },
+                    { deviceName: 'Desktop-02', ip: '192.168.1.11', loginTime: '2024-07-28 08:15', duration: '2h 10m', coords: '48.8566° N, 2.3522° E' },
+                ];
+
+                let tableHTML = `
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-800">
+                            <tr>
+                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Device Name</th>
+                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">IP Address</th>
+                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Login Time</th>
+                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Duration</th>
+                                <th class="py-3.5 px-4 text-left text-sm font-semibold text-emerald-300">Coordinates</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-800 bg-gray-900">
+                `;
+                mockData.forEach(item => {
+                    tableHTML += `
+                        <tr class="hover:bg-gray-700 transition-colors">
+                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.deviceName}</td>
+                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.ip}</td>
+                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.loginTime}</td>
+                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.duration}</td>
+                            <td class="whitespace-nowrap px-4 py-4 text-sm">${item.coords}</td>
+                        </tr>
+                    `;
+                });
+                tableHTML += `</tbody></table>`;
+                tableContainer.innerHTML = tableHTML;
+            }
         });
     </script>
 </body>
