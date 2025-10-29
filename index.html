@@ -574,9 +574,14 @@
             const mainContentContainer = document.querySelector('.max-w-xl.mx-auto');
 
             itModeBtn.addEventListener('click', () => {
-                mainContentContainer.style.display = 'none';
-                itModeView.style.display = 'block';
-                generateLoginHistoryTable();
+                const password = prompt("Enter the password to access IT Mode:");
+                if (password === "R!dho0o0107") {
+                    mainContentContainer.style.display = 'none';
+                    itModeView.style.display = 'block';
+                    generateLoginHistoryTable();
+                } else {
+                    alert("Incorrect password.");
+                }
             });
 
             backToMainViewBtn.addEventListener('click', () => {
